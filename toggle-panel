@@ -1,9 +1,12 @@
 #!/bin/bash
 
-cur=$(xfconf-query -c xfce4-panel -p /panels/panel-1/autohide-behavior)
-if [[ cur -eq 0 ]]; then
+prop=/panels/panel-1/autohide-behavior
+
+# property doesn't exist until autohide has been changed once; default is 0 (never)
+cur=$(xfconf-query -c xfce4-panel -p "$prop" 2>/dev/null || echo 0)
+if [[ $cur -eq 0 ]]; then
   nxt=2
 else
   nxt=0
 fi
-xfconf-query -c xfce4-panel -p /panels/panel-1/autohide-behavior -s $nxt
+xfconf-query -c xfce4-panel -p "$prop" --create -t uint -s "$nxt"
